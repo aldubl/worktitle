@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using WorkTitle.Api;
 using WorkTitle.Api.Middleware;
 using WorkTitle.Infrastructure;
@@ -10,7 +11,12 @@ builder.Services.AddServices(builder.Configuration);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo {Title = "Wish list Api.Gate", Version = "v1"});
+    opt.EnableAnnotations();
+});
+
 
 var app = builder.Build();
 
