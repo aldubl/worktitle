@@ -10,28 +10,18 @@ namespace WorkTitle.Domain.Entities
 {
     public sealed class User : BaseEntity
     {
-        private Role? _role;
+        public string? Name { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public required string FirstName { get; set; }
+        public string? Login { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public required string LastName { get; set; }
+        public string? PhotoUrl { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public required string Email { get; set; }
+        public string? ChatId { get; set; }        
 
-        [Required]
-        public required string Password { get; set; }
+        public Guid? DefaultListId { get; set; }
 
-        [Required]        
-        public Role Role
-        {
-            set => _role = value;
-            get => _role ?? throw new InvalidOperationException("Uninitialized property: " + nameof(Role));
-        }
+        public WishList? DefaultList { get; set; }
+
+        public ICollection<WishList>? Lists { get; set; }
     }
 }

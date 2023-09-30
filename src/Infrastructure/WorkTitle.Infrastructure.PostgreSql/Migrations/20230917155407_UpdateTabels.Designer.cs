@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkTitle.Infrastructure.PostgreSql.Perstistance;
@@ -11,9 +12,11 @@ using WorkTitle.Infrastructure.PostgreSql.Perstistance;
 namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
 {
     [DbContext(typeof(WorkTitleContext))]
-    partial class WorkTitleContextModelSnapshot : ModelSnapshot
+    [Migration("20230917155407_UpdateTabels")]
+    partial class UpdateTabels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,15 +25,62 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WorkTitle.Domain.Entities.ListGroup", b =>
+            modelBuilder.Entity("WorkTitle.Domain.Entities.List", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<Guid?>("ListId")
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("bytea");
+
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsShowFullness")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("IsShowMined")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValueSql("true");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<short?>("NeedVotes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<Guid?>("TypeId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id")
+                        .HasName("List_pkey");
+
+                    b.HasIndex("TypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("List", (string)null);
+                });
+
+            modelBuilder.Entity("WorkTitle.Domain.Entities.ListGroup", b =>
+                {
+                    b.Property<Guid>("ListId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasIndex("ListId");
@@ -59,13 +109,10 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
 
             modelBuilder.Entity("WorkTitle.Domain.Entities.ListVoter", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ListId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ListId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasIndex("ListId");
@@ -88,7 +135,7 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
                     b.Property<decimal?>("Price")
                         .HasColumnType("money");
 
-                    b.Property<Guid?>("ProductId")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id")
@@ -157,7 +204,6 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
             modelBuilder.Entity("WorkTitle.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
@@ -171,27 +217,7 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("53729686-a368-4eeb-8bfa-cc69b6050d02"),
-                            Description = "System administrator with full access and control.",
-                            Name = "Administrator"
-                        },
-                        new
-                        {
-                            Id = new Guid("b0ae7aac-5493-45cd-ad16-87426a5e7665"),
-                            Description = "User with standard permissions.",
-                            Name = "User"
-                        },
-                        new
-                        {
-                            Id = new Guid("73745220-8b23-445c-83b1-ae3662dce2b2"),
-                            Description = "Limited access guest account.",
-                            Name = "Guest"
-                        });
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("WorkTitle.Domain.Entities.ScoreHistory", b =>
@@ -255,118 +281,7 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("WorkTitle.Domain.Entities.WishList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("bytea");
-
-                    b.Property<bool>("IsGroup")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsShowFullness")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("IsShowMined")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValueSql("true");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
-
-                    b.Property<short?>("NeedVotes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValueSql("0");
-
-                    b.Property<Guid?>("TypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id")
-                        .HasName("List_pkey");
-
-                    b.HasIndex("TypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("List", (string)null);
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.ListGroup", b =>
-                {
-                    b.HasOne("WorkTitle.Domain.Entities.WishList", "List")
-                        .WithMany()
-                        .HasForeignKey("ListId")
-                        .HasConstraintName("List");
-
-                    b.HasOne("WorkTitle.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("User");
-
-                    b.Navigation("List");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.ListVoter", b =>
-                {
-                    b.HasOne("WorkTitle.Domain.Entities.WishList", "List")
-                        .WithMany()
-                        .HasForeignKey("ListId")
-                        .HasConstraintName("List");
-
-                    b.HasOne("WorkTitle.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("User");
-
-                    b.Navigation("List");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.Product", b =>
-                {
-                    b.HasOne("WorkTitle.Domain.Entities.WishList", "List")
-                        .WithMany("Products")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired()
-                        .HasConstraintName("List");
-
-                    b.Navigation("List");
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.User", b =>
-                {
-                    b.HasOne("WorkTitle.Domain.Entities.WishList", "DefaultList")
-                        .WithMany("Users")
-                        .HasForeignKey("DefaultListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("DefaultListId");
-
-                    b.HasOne("WorkTitle.Domain.Entities.Role", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("DefaultList");
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.WishList", b =>
+            modelBuilder.Entity("WorkTitle.Domain.Entities.List", b =>
                 {
                     b.HasOne("WorkTitle.Domain.Entities.ListType", "Type")
                         .WithMany("Lists")
@@ -384,6 +299,78 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WorkTitle.Domain.Entities.ListGroup", b =>
+                {
+                    b.HasOne("WorkTitle.Domain.Entities.List", "List")
+                        .WithMany()
+                        .HasForeignKey("ListId")
+                        .IsRequired()
+                        .HasConstraintName("List");
+
+                    b.HasOne("WorkTitle.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("User");
+
+                    b.Navigation("List");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WorkTitle.Domain.Entities.ListVoter", b =>
+                {
+                    b.HasOne("WorkTitle.Domain.Entities.List", "List")
+                        .WithMany()
+                        .HasForeignKey("ListId")
+                        .IsRequired()
+                        .HasConstraintName("List");
+
+                    b.HasOne("WorkTitle.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("User");
+
+                    b.Navigation("List");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WorkTitle.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("WorkTitle.Domain.Entities.List", "List")
+                        .WithMany("Products")
+                        .HasForeignKey("ListId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("List");
+
+                    b.Navigation("List");
+                });
+
+            modelBuilder.Entity("WorkTitle.Domain.Entities.User", b =>
+                {
+                    b.HasOne("WorkTitle.Domain.Entities.List", "DefaultList")
+                        .WithMany("Users")
+                        .HasForeignKey("DefaultListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("DefaultListId");
+
+                    b.HasOne("WorkTitle.Domain.Entities.Role", null)
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId");
+
+                    b.Navigation("DefaultList");
+                });
+
+            modelBuilder.Entity("WorkTitle.Domain.Entities.List", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("WorkTitle.Domain.Entities.ListType", b =>
                 {
                     b.Navigation("Lists");
@@ -397,13 +384,6 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
             modelBuilder.Entity("WorkTitle.Domain.Entities.User", b =>
                 {
                     b.Navigation("Lists");
-                });
-
-            modelBuilder.Entity("WorkTitle.Domain.Entities.WishList", b =>
-                {
-                    b.Navigation("Products");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

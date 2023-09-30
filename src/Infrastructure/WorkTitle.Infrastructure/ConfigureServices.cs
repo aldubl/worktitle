@@ -17,9 +17,17 @@ namespace WorkTitle.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            var portString = configuration["PostgresPort"];
+            portString = string.IsNullOrEmpty(portString) ? "5432" : portString;
+            int port = int.Parse(portString);
+
             var conStrBuilder = new NpgsqlConnectionStringBuilder(configuration.GetConnectionString("WorkTitleContext"))
             {                
-                Password = configuration["PostgresPassword"]
+                Password = configuration["PostgresPassword"],
+                Host = configuration["PostgresHost"],
+                Port = port,
+                Username = configuration["PostgresUsername"],
+                Database = configuration["PostgresDatabase"]
             };
             var workTitleContext = conStrBuilder.ConnectionString;
             services.AddDbContext<WorkTitleContext>(options => options.UseNpgsql(workTitleContext
