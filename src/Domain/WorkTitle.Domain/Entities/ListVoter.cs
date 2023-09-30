@@ -8,15 +8,14 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class ListVoter
+    public sealed class ListVoter : BaseEntity
     {
-        public Guid ListId { get; set; }
+        public Guid? ListId { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
-        public virtual List List { get; set; } = null!;
+        public WishList? List { get; set; }
 
-        public virtual User User { get; set; } = null!;
+        public User? User { get; set; }
     }
-
 }

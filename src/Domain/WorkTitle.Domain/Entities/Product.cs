@@ -8,7 +8,7 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class Product : BaseEntity
+    public sealed class Product : BaseEntity
     {
         public string? Name { get; set; }
 
@@ -22,9 +22,7 @@ namespace WorkTitle.Domain.Entities
 
         public string? PhotoUrl { get; set; }
 
-        public string? Description { get; set; }
-
-        public Guid Id { get; set; }
+        public string? Description { get; set; }        
 
         public short? Vote { get; set; }
 
@@ -36,7 +34,7 @@ namespace WorkTitle.Domain.Entities
 
         public byte[]? Image { get; set; }
 
-        public virtual List List { get; set; } = null!;
+        public WishList? List { get; set; }
     }
 
 }

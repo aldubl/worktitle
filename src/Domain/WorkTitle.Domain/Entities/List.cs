@@ -8,15 +8,13 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class List : BaseEntity
+    public sealed class WishList : BaseEntity
     {
         public Guid? UserId { get; set; }
 
         public bool IsPublic { get; set; }
 
-        public Guid? TypeId { get; set; }
-
-        public Guid Id { get; set; }
+        public Guid? TypeId { get; set; }        
 
         public bool IsGroup { get; set; }
 
@@ -30,12 +28,12 @@ namespace WorkTitle.Domain.Entities
 
         public byte[]? Image { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<Product>? Products { get; set; }
 
-        public virtual ListType? Type { get; set; }
+        public ListType? Type { get; set; }
 
-        public virtual User? User { get; set; }
+        public User? User { get; set; }
 
-        public virtual ICollection<User> Users { get; set; } = new List<User>();
+        public ICollection<User>? Users { get; set; }
     }
 }

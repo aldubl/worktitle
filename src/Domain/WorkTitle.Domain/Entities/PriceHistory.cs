@@ -9,15 +9,13 @@ using WorkTitle.Domain.Abstractions;
 namespace WorkTitle.Domain.Entities
 {
 
-    public class PriceHistory
+    public sealed class PriceHistory : BaseEntity
     {
-        public Guid ProductId { get; set; }
+        public Guid? ProductId { get; set; }
 
         public DateTimeOffset? Date { get; set; }
 
         public decimal? Price { get; set; }
-
-        public Guid Id { get; set; }
     }
 
 }

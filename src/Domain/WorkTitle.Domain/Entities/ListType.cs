@@ -8,13 +8,10 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class ListType
+    public sealed class ListType : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public string? Description { get; set; }
 
-        public virtual ICollection<List> Lists { get; set; } = new List<List>();
+        public ICollection<WishList>? Lists { get; set; }
     }
-
 }

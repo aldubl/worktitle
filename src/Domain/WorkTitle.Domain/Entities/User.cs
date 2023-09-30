@@ -8,7 +8,7 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class User : BaseEntity
+    public sealed class User : BaseEntity
     {
         public string? Name { get; set; }
 
@@ -16,14 +16,12 @@ namespace WorkTitle.Domain.Entities
 
         public string? PhotoUrl { get; set; }
 
-        public string? ChatId { get; set; }
-
-        public Guid Id { get; set; }
+        public string? ChatId { get; set; }        
 
         public Guid? DefaultListId { get; set; }
 
-        public virtual List? DefaultList { get; set; }
+        public WishList? DefaultList { get; set; }
 
-        public virtual ICollection<List> Lists { get; set; } = new List<List>();
+        public ICollection<WishList>? Lists { get; set; }
     }
 }

@@ -8,10 +8,8 @@ using WorkTitle.Domain.Abstractions;
 
 namespace WorkTitle.Domain.Entities
 {
-    public class ScoreHistory : BaseEntity
+    public sealed class ScoreHistory : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public Guid ProductId { get; set; }
 
         public DateTimeOffset? Date { get; set; }
