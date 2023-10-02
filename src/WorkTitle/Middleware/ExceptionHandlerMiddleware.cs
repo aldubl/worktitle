@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace WorkTitle.Api.Middleware
@@ -19,25 +21,17 @@ namespace WorkTitle.Api.Middleware
             {
                 await _next.Invoke(context);
             }
-            catch (KeyNotFoundException ex)
-            {
-                await HandleNotFoundExceptionMessageAsync(context, ex).ConfigureAwait(false);
-            }
             catch (Exception ex)
             {
-                await HandleExceptionMessageAsync(context, ex).ConfigureAwait(false);
+                HttpStatusCode code = ex switch
+                {
+                    KeyNotFoundException or FileNotFoundException => HttpStatusCode.NotFound,
+                    UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+                    ValidationException or InvalidOperationException => HttpStatusCode.BadRequest,
+                    _ => HttpStatusCode.InternalServerError,
+                };
+                await HandleException(context, ex, code).ConfigureAwait(false);
             }
-        }
-
-        private static Task HandleNotFoundExceptionMessageAsync(HttpContext context, KeyNotFoundException exception)
-        {
-            return HandleException(context, exception, HttpStatusCode.NotFound);            
-        }
-
-        private static Task HandleExceptionMessageAsync(HttpContext context, Exception exception)
-        {
-            return HandleException(context, exception, HttpStatusCode.InternalServerError);
-          
         }
 
         private static Task HandleException(HttpContext context, Exception exception, HttpStatusCode statusCodeInput)
