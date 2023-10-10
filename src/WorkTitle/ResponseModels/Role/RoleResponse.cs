@@ -6,5 +6,5 @@ namespace WorkTitle.Api.ResponseModels.Role
         Guid Id,
         string Name,
         string Description,
-        ICollection<User> Users);
+        ICollection<WorkTitle.Domain.Entities.User> Users);
 }
