@@ -64,6 +64,8 @@ namespace WorkTitle.Api
             {
                 cfg.AddProfile<RoleProfile>();
                 cfg.AddProfile<RoleUiProfile>();
+                cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<UserUiProfile>();
             });
             configuration.AssertConfigurationIsValid();
             return configuration;
