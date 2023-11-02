@@ -18,6 +18,8 @@ namespace WorkTitle.Domain.EntitiesDto
 
         public string? ChatId { get; set; }
 
+        public string Email { get; set; }
+
         public Guid? DefaultListId { get; set; }
 
         public WishList? DefaultList { get; set; }

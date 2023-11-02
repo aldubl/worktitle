@@ -16,7 +16,8 @@ namespace WorkTitle.Domain.Entities
 
         public string? PhotoUrl { get; set; }
 
-        public string? ChatId { get; set; }        
+        public string? ChatId { get; set; }
+        public string Email { get; set; }
 
         public Guid? DefaultListId { get; set; }
 

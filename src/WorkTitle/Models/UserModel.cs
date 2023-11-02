@@ -20,7 +20,8 @@ namespace WorkTitle.Api.Models
 
         public string? ChatId { get; set; }
 
-        public WishList? DefaultList { get; set; }
+        [Required]
+        public string Email { get; set; }
 
     }
 }

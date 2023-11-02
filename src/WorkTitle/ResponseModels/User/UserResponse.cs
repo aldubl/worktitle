@@ -8,6 +8,7 @@ namespace WorkTitle.Api.ResponseModels.User
         string? Login,
         string? PhotoUrl,
         string? ChatId,
+        string Email,
         Guid? DefaultListId,
         WishList? DefaultList,
         ICollection<WishList>? Lists);
