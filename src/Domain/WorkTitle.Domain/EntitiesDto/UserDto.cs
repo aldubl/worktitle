@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTitle.Domain.Abstractions;
+using WorkTitle.Domain.Entities;
 
-namespace WorkTitle.Domain.Entities
+namespace WorkTitle.Domain.EntitiesDto
 {
-    public sealed class User : BaseEntity
+    public sealed class UserDto : BaseEntityDto
     {
         public string? Name { get; set; }
 
@@ -17,6 +17,7 @@ namespace WorkTitle.Domain.Entities
         public string? PhotoUrl { get; set; }
 
         public string? ChatId { get; set; }
+
         public string Email { get; set; }
 
         public Guid? DefaultListId { get; set; }
