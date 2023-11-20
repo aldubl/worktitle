@@ -69,7 +69,7 @@ namespace WorkTitle.Api.Controllers
         {
             var user = await _sender.Send(new GetUserByIdAsyncQuery(id));
 
-            return Ok(User);
+            return Ok(_mapper.Map<UserResponse>(user));
         }
 
 

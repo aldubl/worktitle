@@ -12,6 +12,7 @@ namespace WorkTitle.Api.Mapping
         {
             CreateMap<UserDto, UserResponse>();
             CreateMap<UserDto, UserResponseShort>();
+                
             CreateMap<UserDto, UserModel>();
 
             CreateMap<UserModel, UserDto>()
@@ -21,7 +22,7 @@ namespace WorkTitle.Api.Mapping
                 .ForMember(x => x.Lists, map => map.Ignore());
             CreateMap<UserResponse, UserDto>();
             CreateMap<UserResponseShort, UserDto>()
-                .ForMember(x => x.DefaultListId, map => map.Ignore())
+                .ForMember(x => x.DefaultList, map => map.Ignore())
                 .ForMember(x => x.Lists, map => map.Ignore());
 
 

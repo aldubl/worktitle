@@ -9,5 +9,5 @@ namespace WorkTitle.Api.ResponseModels.User
         string? PhotoUrl,
         string? ChatId,
         string Email,
-        WishList? DefaultList);
+        Guid? DefaultListId);
 }
