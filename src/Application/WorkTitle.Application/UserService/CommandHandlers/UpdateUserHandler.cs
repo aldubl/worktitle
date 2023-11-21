@@ -6,12 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkTitle.Application.Abstractions.Repositories;
-using WorkTitle.Application.RoleService.Commands;
 using WorkTitle.Application.UserService.Commands;
 using WorkTitle.Domain.Entities;
 using WorkTitle.Domain.EntitiesDto;
 
-namespace WorkTitle.Application.RoleService.CommandHandlers
+namespace WorkTitle.Application.UserService.CommandHandlers
 {
     public class UpdateUserHandler : IRequestHandler<UpdateUserAsyncCommand, UserDto>
     {

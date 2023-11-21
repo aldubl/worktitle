@@ -19,6 +19,10 @@ using WorkTitle.Application.ProductService.CommandHandlers;
 using WorkTitle.Application.ProductService.Commands;
 using WorkTitle.Application.ProductService.Queries;
 using WorkTitle.Application.ProductService.QueriesHandlers;
+using WorkTitle.Application.WishListService.Queries;
+using WorkTitle.Application.WishListService.QueriesHandlers;
+using WorkTitle.Application.WishListService.Commands;
+using WorkTitle.Application.WishListService.CommandHandlers;
 
 namespace WorkTitle.Api
 {
@@ -55,6 +59,12 @@ namespace WorkTitle.Api
                 .AddTransient<IRequestHandler<AddProductAsyncCommand, ProductDto>, AddProductHandler>()
                 .AddTransient<IRequestHandler<UpdateProductAsyncCommand, ProductDto>, UpdateProductHandler>()
                 .AddTransient<IRequestHandler<DeleteProductAsyncCommand, Guid>, DeleteProductHandler>()
+                //wishList
+                .AddTransient<IRequestHandler<GetWishListsAsyncQuery, IEnumerable<WishListDto>>, GetWishListsHandler>()
+                .AddTransient<IRequestHandler<GetWishListByIdAsyncQuery, WishListDto>, GetWishListByIdHandler>()
+                .AddTransient<IRequestHandler<AddWishListAsyncCommand, WishListDto>, AddWishListHandler>()
+                .AddTransient<IRequestHandler<UpdateWishListAsyncCommand, WishListDto>, UpdateWishListHandler>()
+                .AddTransient<IRequestHandler<DeleteWishListAsyncCommand, Guid>, DeleteWishListHandler>()
                 ;
             return serviceCollection;
         }
@@ -64,7 +74,8 @@ namespace WorkTitle.Api
             serviceCollection
                 .AddTransient<IRoleRepository, RoleRepository>()
                 .AddTransient<IUserRepository, UserRepository>()
-                .AddTransient<IProductRepository, ProductRepository>();
+                .AddTransient<IProductRepository, ProductRepository>()
+                .AddTransient<IWishListRepository, WishListRepository>();
             ;
             return serviceCollection;
         }
@@ -79,6 +90,8 @@ namespace WorkTitle.Api
                 cfg.AddProfile<UserUiProfile>();
                 cfg.AddProfile<ProductProfile>();
                 cfg.AddProfile<ProductUiProfile>();
+                cfg.AddProfile<WishListProfile>();
+                cfg.AddProfile<WishListUiProfile>();
             });
             configuration.AssertConfigurationIsValid();
             return configuration;

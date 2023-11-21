@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WorkTitle.Domain.Entities;
+
 
 namespace WorkTitle.Api.ResponseModels.Product
 {
@@ -15,7 +15,7 @@ namespace WorkTitle.Api.ResponseModels.Product
         bool IsMined,
         decimal? Fullness,
         byte[]? Image,
-        WishList? List
+        Domain.Entities.WishList? List
         );
     
     

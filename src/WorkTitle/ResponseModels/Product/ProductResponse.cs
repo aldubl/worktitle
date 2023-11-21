@@ -16,6 +16,5 @@ namespace WorkTitle.Api.ResponseModels.Product
         decimal? Fullness,
         Guid ListId,
         byte[]? Image,
-        WishList? List
-        );
+        Domain.Entities.WishList? List);
 }

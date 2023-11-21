@@ -10,6 +10,6 @@ namespace WorkTitle.Api.ResponseModels.User
         string? ChatId,
         string Email,
         Guid? DefaultListId,
-        WishList? DefaultList,
-        ICollection<WishList>? Lists);
+        Domain.Entities.WishList? DefaultList,
+        ICollection<Domain.Entities.WishList>? Lists);
 }
