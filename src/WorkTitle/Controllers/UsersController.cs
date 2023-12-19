@@ -110,7 +110,11 @@ namespace WorkTitle.Api.Controllers
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Не указано обязательное поле")]
         public async Task<ActionResult> AddUser([FromBody]UserModel userModel)
         {
-            var addedUser = await _sender.Send(new AddUserAsyncCommand(_mapper.Map<UserDto>(userModel)));
+            var userDto = _mapper.Map<UserDto>(userModel);
+            userDto.DefaultListId = new Guid();
+
+            var addedUser = await _sender.Send(new AddUserAsyncCommand(userDto));
+            //var addedUser = await _sender.Send(new AddUserAsyncCommand(_mapper.Map<UserDto>(userModel)));
 
             return CreatedAtRoute("GetUserById", new { id = addedUser.Id }, _mapper.Map<UserResponseShort>(addedUser));
         }

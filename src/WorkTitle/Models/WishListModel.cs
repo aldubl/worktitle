@@ -5,6 +5,8 @@ namespace WorkTitle.Api.Models
 {
     public class WishListModel
     {
+        public bool IsPublic { get; set; }
+        public bool IsGroup { get; set; }
         public short? NeedVotes { get; set; }
         public bool? IsShowMined { get; set; }
         public bool IsShowFullness { get; set; }
