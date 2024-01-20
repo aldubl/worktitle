@@ -4,6 +4,8 @@ namespace WorkTitle.Api.ResponseModels.WishList
 {
     internal sealed record WishListResponseShort(
         Guid Id,
+        bool IsPublic,
+        bool IsGroup,
         short? NeedVotes,
         bool? IsShowMined,
         bool IsShowFullness,
