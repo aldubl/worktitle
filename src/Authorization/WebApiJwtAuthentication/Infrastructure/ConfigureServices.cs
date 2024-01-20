@@ -25,16 +25,16 @@ namespace WebApiJwtAuthentication.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(applicationContext
                 , x => x.MigrationsAssembly("WebApiJwtAuthentication")));
 
-            services.AddScoped<IdentityDbContext>(provider => provider.GetRequiredService<IdentityDbContext>());
+            //services.AddScoped<IdentityDbContext>(provider => provider.GetRequiredService<IdentityDbContext>());
 
             return services;
         }
 
         public static async void InitializeInfrastructureServices(this IServiceProvider provider)
         {
-            //using var scope = provider.CreateScope();
-            //var dbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
-            //await dbContext.Database.MigrateAsync();
+            using var scope = provider.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await dbContext.Database.MigrateAsync();
         }
     }
 }
