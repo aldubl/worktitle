@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddSingleton(builder.Configuration)
-    .AddInfrastructureServices(builder.Configuration);
+    .AddInfrastructureServices(builder.Configuration)
+	.AddConfiguredAuthorization(builder.Configuration); 
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()

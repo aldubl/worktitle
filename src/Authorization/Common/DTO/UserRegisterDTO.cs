@@ -19,7 +19,7 @@ namespace Common.DTO
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password), ErrorMessage = "The password do not match.")]
+        [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают.")]
         public string? ConfirmPassword { get; set; }
     }
 }
