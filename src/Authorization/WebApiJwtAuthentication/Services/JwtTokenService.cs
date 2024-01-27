@@ -13,6 +13,7 @@ namespace WebApiJwtAuthentication.Services
         {
             _configuration = configuration;
         }
+
         public JwtSecurityToken GetJwtToken(List<Claim> userClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
@@ -28,5 +29,36 @@ namespace WebApiJwtAuthentication.Services
 
             return token;
         }
-    }
+
+		public bool ValidateJwtToken(string token)
+		{
+			var secret = Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]);
+			var securityKey = new SymmetricSecurityKey(secret);
+
+			var issuer = _configuration["Jwt:ValidIssuer"];
+			var audience = _configuration["Jwt:ValidAudience"];
+
+			var tokenHandler = new JwtSecurityTokenHandler();
+			try
+			{
+				tokenHandler.ValidateToken(token, new TokenValidationParameters
+				{
+					ValidateIssuer = true,
+					ValidateAudience = true,
+					ValidateIssuerSigningKey = true,
+					ValidateLifetime = true,
+					ValidIssuer = issuer,
+					ValidAudience = audience,
+					IssuerSigningKey = securityKey,
+					ClockSkew = TimeSpan.Zero,
+				}, out SecurityToken validatedToken);
+			}
+			catch
+			{
+				return false;
+			}
+			return true;
+		}
+
+	}
 }

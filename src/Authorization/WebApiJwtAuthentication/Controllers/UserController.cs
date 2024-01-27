@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,18 +14,21 @@ namespace WebApiJwtAuthentication.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IClaimsService _claimsService;
+		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly IClaimsService _claimsService;
         private readonly IJwtTokenService _jwtTokenService;
 
         public UserController(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
-            IClaimsService claimsService,
+			SignInManager<ApplicationUser> signInManager,
+			IClaimsService claimsService,
             IJwtTokenService jwtTokenService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _claimsService = claimsService;
+			_signInManager = signInManager;
+			_claimsService = claimsService;
             _jwtTokenService = jwtTokenService;
         }
 
@@ -108,5 +112,15 @@ namespace WebApiJwtAuthentication.Controllers
             });
         }
 
-    }
+		[HttpPost]
+		[Route("logout")]
+		[Authorize]
+		public async Task<IActionResult> Logout()
+		{
+			await _signInManager.SignOutAsync();
+
+			return NoContent();
+		}
+
+	}
 }
