@@ -31,9 +31,9 @@ namespace WorkTitle.Infrastructure.Implementation.Repositories
         }
 
         /// <inheritdoc />
-        public virtual void Add(T item)
+        public virtual T Add(T item)
         {
-            _entitySet.Add(item);
+            return _entitySet.Add(item).Entity;
         }
 
         /// <inheritdoc />

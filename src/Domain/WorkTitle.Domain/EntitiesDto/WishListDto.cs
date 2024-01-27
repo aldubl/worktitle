@@ -24,7 +24,7 @@ namespace WorkTitle.Domain.EntitiesDto
 
         public bool IsShowFullness { get; set; }
 
-        public string? Name { get; set; }
+        public required string Name { get; set; }
 
         public byte[]? Image { get; set; }
 

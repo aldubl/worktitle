@@ -13,15 +13,16 @@ namespace WorkTitle.Api.Models
         /// Gets or sets the name of the user.
         /// </summary>
         [Required]
-        public string? Name { get; set; }
-        public string? Login { get; set; }
+        public required string Name { get; set; }
+        //public string? Login { get; set; }
 
-        public string? PhotoUrl { get; set; }
-
-        public string? ChatId { get; set; }
+        //public string? PhotoUrl { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        public required long ChatId { get; set; }
+
+        [Required]
+        public required string Email { get; set; }
 
     }
 }

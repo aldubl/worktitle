@@ -50,6 +50,7 @@ namespace WorkTitle.Api
                 //user
                 .AddTransient<IRequestHandler<GetUsersAsyncQuery, IEnumerable<UserDto>>, GetUsersHandler>()
                 .AddTransient<IRequestHandler<GetUserByIdAsyncQuery, UserDto>, GetUserByIdHandler>()
+                .AddTransient<IRequestHandler<GetUserByChatIdAsyncQuery, UserDto>, GetUserByChatIdHandler>()
                 .AddTransient<IRequestHandler<AddUserAsyncCommand, UserDto>, AddUserHandler>()
                 .AddTransient<IRequestHandler<UpdateUserAsyncCommand, UserDto>, UpdateUserHandler>()
                 .AddTransient<IRequestHandler<DeleteUserAsyncCommand, Guid>, DeleteUserHandler>()

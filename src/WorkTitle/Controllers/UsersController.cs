@@ -72,7 +72,6 @@ namespace WorkTitle.Api.Controllers
             return Ok(_mapper.Map<UserResponse>(user));
         }
 
-
         /// <summary>
         /// Retrieves a user by its chatId.
         /// </summary>
@@ -86,11 +85,11 @@ namespace WorkTitle.Api.Controllers
             )]
         [SwaggerResponse(StatusCodes.Status200OK, "Получен пользователь с указанным ChatId", typeof(UserResponseShort))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "Не найден пользователь с указанным ChatId")]
-        public async Task<ActionResult> GetUserByChatId(string chatId)
+        public async Task<ActionResult> GetUserByChatId(long chatId)
         {
             var user = await _sender.Send(new GetUserByChatIdAsyncQuery(chatId));
 
-            return Ok(User);
+            return Ok(_mapper.Map<UserResponse>(user));
         }
 
 
@@ -111,7 +110,7 @@ namespace WorkTitle.Api.Controllers
         public async Task<ActionResult> AddUser([FromBody]UserModel userModel)
         {
             var userDto = _mapper.Map<UserDto>(userModel);
-            userDto.DefaultListId = new Guid();
+            //userDto.DefaultListId = new Guid();
 
             var addedUser = await _sender.Send(new AddUserAsyncCommand(userDto));
             //var addedUser = await _sender.Send(new AddUserAsyncCommand(_mapper.Map<UserDto>(userModel)));

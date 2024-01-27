@@ -17,6 +17,7 @@ namespace WorkTitle.Api.Mapping
 
             CreateMap<UserModel, UserDto>()
                 .ForMember(x => x.Id, map => map.Ignore())
+                .ForMember(x => x.PhotoUrl, map => map.Ignore())
                 .ForMember(x => x.DefaultListId, map => map.Ignore())
                 .ForMember(x => x.DefaultList, map => map.Ignore())
                 .ForMember(x => x.Lists, map => map.Ignore());

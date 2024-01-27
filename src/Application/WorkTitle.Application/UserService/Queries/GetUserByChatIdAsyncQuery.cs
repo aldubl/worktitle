@@ -8,5 +8,5 @@ using WorkTitle.Domain.EntitiesDto;
 
 namespace WorkTitle.Application.UserService.Queries
 {
-    public sealed record GetUserByChatIdAsyncQuery(string chatId) : IRequest<UserDto>;
+    public sealed record GetUserByChatIdAsyncQuery(long chatId) : IRequest<UserDto>;
 }
