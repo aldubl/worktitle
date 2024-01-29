@@ -10,5 +10,6 @@ namespace WorkTitle.Telegramm.API.Interfaces
     internal interface IWorkTitleApi
     {
         Task<User> GetUserByChatIdAsync(long chatId);
+        Task<User> RegisterUserAsync(UserModel user);        
     }
 }

@@ -11,6 +11,10 @@ using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
 using Telegram.Bot;
+using WorkTitle.Telegramm.API.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
+using WorkTitle.Telegramm.DomainModels;
 
 namespace WorkTitle.Telegramm.Services
 {
@@ -18,11 +22,13 @@ namespace WorkTitle.Telegramm.Services
     {
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger<UpdateHandler> _logger;
+        private readonly IWorkTitleApi _api;
 
-        public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger)
+        public UpdateHandler(ITelegramBotClient botClient, IWorkTitleApi api, ILogger<UpdateHandler> logger)
         {
             _botClient = botClient;
             _logger = logger;
+            _api = api;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient _, Update update, CancellationToken cancellationToken)
@@ -52,25 +58,22 @@ namespace WorkTitle.Telegramm.Services
             if (message.Text is not { } messageText)
                 return;
 
+            Regex validateEmailRegex = new("^\\S+@\\S+\\.\\S+$");
+
             var action = messageText.Split(' ')[0] switch
             {
-                "/start" => StartKeyboard(_botClient, message, cancellationToken),
-                "/keyboard" => SendReplyKeyboard(_botClient, message, cancellationToken),
-                "/remove" => RemoveKeyboard(_botClient, message, cancellationToken),
-                //"/photo" => SendFile(_botClient, message, cancellationToken),
-                "/request" => RequestContactAndLocation(_botClient, message, cancellationToken),
-                "/inline_mode" => StartInlineQuery(_botClient, message, cancellationToken),
-                "/throw" => FailingHandler(_botClient, message, cancellationToken),
+                "/start" => Usage(_botClient, message, cancellationToken, true),
+                var val when validateEmailRegex.IsMatch(val) => EmailHandle(_botClient, message, cancellationToken),
                 _ => Usage(_botClient, message, cancellationToken)
             };
             Message sentMessage = await action;
             _logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
 
-            // Send inline keyboard
-            // You can process responses in BotOnCallbackQueryReceived handler
-            static async Task<Message> StartKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+            async Task<Message> EmailHandle(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
             {
-                const string usage = "Бот принимает текстовые сообщения для добавления в лист желания по умолчанию либо ссылку на товар.";
+                await _api.RegisterUserAsync(new UserModel() { ChatId = message.From.Id, Email = message.Text, Name = $"{message.From.FirstName} {message.From.LastName}"});
+
+                string usage = "Вы успешно зарегистрировались!";
 
                 return await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
@@ -79,59 +82,30 @@ namespace WorkTitle.Telegramm.Services
                     cancellationToken: cancellationToken);
             }
 
-            static async Task<Message> SendReplyKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+            async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken, bool start = false)
             {
-                ReplyKeyboardMarkup replyKeyboardMarkup = new(
-                    new[]
-                    {
-                        new KeyboardButton[] { "1.1", "1.2" },
-                        new KeyboardButton[] { "2.1", "2.2" },
-                    })
+                var user = await _api.GetUserByChatIdAsync(message.From!.Id);
+
+                string usage = "";
+                if (start)
                 {
-                    ResizeKeyboard = true
-                };
+                    usage = "Бот принимает текстовые сообщения для добавления в лист желания по умолчанию либо ссылку на товар.";
+                }
 
-                return await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Choose",
-                    replyMarkup: replyKeyboardMarkup,
-                    cancellationToken: cancellationToken);
-            }
+                if (user.Id == Guid.Empty)
+                {
+                    usage += "\nУкажите свой Email";
 
-            static async Task<Message> RemoveKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-            {
-                return await botClient.SendTextMessageAsync(
+                    return await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
-                    text: "Removing keyboard",
+                    text: usage,
                     replyMarkup: new ReplyKeyboardRemove(),
                     cancellationToken: cancellationToken);
-            }                        
-
-            static async Task<Message> RequestContactAndLocation(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-            {
-                ReplyKeyboardMarkup RequestReplyKeyboard = new(
-                    new[]
-                    {
-                    KeyboardButton.WithRequestLocation("Location"),
-                    KeyboardButton.WithRequestContact("Contact"),
-                    });
-
-                return await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Who or Where are you?",
-                    replyMarkup: RequestReplyKeyboard,
-                    cancellationToken: cancellationToken);
-            }
-
-            static async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-            {
-                const string usage = "Usage:\n" +
-                                     "/inline_keyboard - send inline keyboard\n" +
-                                     "/keyboard    - send custom keyboard\n" +
-                                     "/remove      - remove custom keyboard\n" +
-                                     "/photo       - send a photo\n" +
-                                     "/request     - request location or contact\n" +
-                                     "/inline_mode - send keyboard with Inline Query";
+                }
+                else if (!start)
+                {
+                    usage = "Добавлен в лист!";
+                }
 
                 return await botClient.SendTextMessageAsync(
                     chatId: message.Chat.Id,
@@ -139,89 +113,7 @@ namespace WorkTitle.Telegramm.Services
                     replyMarkup: new ReplyKeyboardRemove(),
                     cancellationToken: cancellationToken);
             }
-
-            static async Task<Message> StartInlineQuery(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-            {
-                InlineKeyboardMarkup inlineKeyboard = new(
-                    InlineKeyboardButton.WithSwitchInlineQueryCurrentChat("Inline Mode"));
-
-                return await botClient.SendTextMessageAsync(
-                    chatId: message.Chat.Id,
-                    text: "Press the button to start Inline Query",
-                    replyMarkup: inlineKeyboard,
-                    cancellationToken: cancellationToken);
-            }
-
-#pragma warning disable RCS1163 // Unused parameter.
-#pragma warning disable IDE0060 // Remove unused parameter
-            static Task<Message> FailingHandler(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-            {
-                throw new IndexOutOfRangeException();
-            }
-#pragma warning restore IDE0060 // Remove unused parameter
-#pragma warning restore RCS1163 // Unused parameter.
         }
-
-        // Process Inline Keyboard callback data
-        private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Received inline keyboard callback from: {CallbackQueryId}", callbackQuery.Id);
-
-            await _botClient.AnswerCallbackQueryAsync(
-                callbackQueryId: callbackQuery.Id,
-                text: $"Received {callbackQuery.Data}",
-                cancellationToken: cancellationToken);
-
-            await _botClient.SendTextMessageAsync(
-                chatId: callbackQuery.Message!.Chat.Id,
-                text: $"Received {callbackQuery.Data}",
-                cancellationToken: cancellationToken);
-        }
-
-        #region Inline Mode
-
-        private async Task BotOnInlineQueryReceived(InlineQuery inlineQuery, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Received inline query from: {InlineQueryFromId}", inlineQuery.From.Id);
-
-            InlineQueryResult[] results = {
-            // displayed result
-            new InlineQueryResultArticle(
-                id: "1",
-                title: "TgBots",
-                inputMessageContent: new InputTextMessageContent("hello"))
-        };
-
-            await _botClient.AnswerInlineQueryAsync(
-                inlineQueryId: inlineQuery.Id,
-                results: results,
-                cacheTime: 0,
-                isPersonal: true,
-                cancellationToken: cancellationToken);
-        }
-
-        private async Task BotOnChosenInlineResultReceived(ChosenInlineResult chosenInlineResult, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Received inline result: {ChosenInlineResultId}", chosenInlineResult.ResultId);
-
-            await _botClient.SendTextMessageAsync(
-                chatId: chosenInlineResult.From.Id,
-                text: $"You chose result with Id: {chosenInlineResult.ResultId}",
-                cancellationToken: cancellationToken);
-        }
-
-        #endregion
-
-#pragma warning disable IDE0060 // Remove unused parameter
-#pragma warning disable RCS1163 // Unused parameter.
-        private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
-#pragma warning restore RCS1163 // Unused parameter.
-#pragma warning restore IDE0060 // Remove unused parameter
-        {
-            _logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
-            return Task.CompletedTask;
-        }
-
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var ErrorMessage = exception switch
@@ -236,5 +128,11 @@ namespace WorkTitle.Telegramm.Services
             if (exception is RequestException)
                 await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
         }
+        private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
+            return Task.CompletedTask;
+        }
+
     }
 }

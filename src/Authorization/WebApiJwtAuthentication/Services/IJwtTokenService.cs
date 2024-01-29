@@ -6,5 +6,6 @@ namespace WebApiJwtAuthentication.Services
     public interface IJwtTokenService
     {
         JwtSecurityToken GetJwtToken(List<Claim> userClaims);
+        bool ValidateJwtToken(string token);
     }
 }
