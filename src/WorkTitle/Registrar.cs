@@ -23,6 +23,10 @@ using WorkTitle.Application.WishListService.Queries;
 using WorkTitle.Application.WishListService.QueriesHandlers;
 using WorkTitle.Application.WishListService.Commands;
 using WorkTitle.Application.WishListService.CommandHandlers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace WorkTitle.Api
 {
@@ -31,11 +35,54 @@ namespace WorkTitle.Api
         internal static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddSingleton((IConfigurationRoot)configuration)
+                .AddAuth(configuration)
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly))
                 .AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()))
                 .AddInfrastructureServices(configuration)
                 .InstallHandlers()
                 .InstallRepositories();
+        }
+
+        private static IServiceCollection AddAuth(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        
+        var secret = Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]);
+        var securityKey = new SymmetricSecurityKey(secret);
+
+        var issuer = configuration["Jwt:ValidIssuer"];
+        var audience = configuration["Jwt:ValidAudience"];
+
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = securityKey,
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
+            const string authPolicyName = "worktitle-auth-policy";
+            serviceCollection.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy(authPolicyName, policy =>
+                {
+                    policy.AuthenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                });
+            });
+
+            serviceCollection.AddControllers(mvcOptions =>
+            {
+                mvcOptions.Filters.Add(new AuthorizeFilter(authPolicyName));
+            });
+            return serviceCollection;
         }
 
         private static IServiceCollection InstallHandlers(this IServiceCollection serviceCollection)
@@ -50,6 +97,7 @@ namespace WorkTitle.Api
                 //user
                 .AddTransient<IRequestHandler<GetUsersAsyncQuery, IEnumerable<UserDto>>, GetUsersHandler>()
                 .AddTransient<IRequestHandler<GetUserByIdAsyncQuery, UserDto>, GetUserByIdHandler>()
+                .AddTransient<IRequestHandler<GetUserByChatIdAsyncQuery, UserDto>, GetUserByChatIdHandler>()
                 .AddTransient<IRequestHandler<AddUserAsyncCommand, UserDto>, AddUserHandler>()
                 .AddTransient<IRequestHandler<UpdateUserAsyncCommand, UserDto>, UpdateUserHandler>()
                 .AddTransient<IRequestHandler<DeleteUserAsyncCommand, Guid>, DeleteUserHandler>()

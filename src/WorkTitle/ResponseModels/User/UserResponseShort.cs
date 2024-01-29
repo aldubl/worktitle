@@ -4,10 +4,10 @@ namespace WorkTitle.Api.ResponseModels.User
 {
     internal sealed record UserResponseShort(
         Guid Id,
-        string? Name,
-        string? Login,
+        string Name,
+        //string? Login,
         string? PhotoUrl,
-        string? ChatId,
+        long ChatId,
         string Email,
-        Guid? DefaultListId);
+        Guid DefaultListId);
 }

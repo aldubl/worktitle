@@ -4,12 +4,12 @@ namespace WorkTitle.Api.ResponseModels.User
 {
     internal sealed record UserResponse(
         Guid Id,
-        string? Name,
-        string? Login,
+        string Name,
+        //string? Login,
         string? PhotoUrl,
-        string? ChatId,
+        long ChatId,
         string Email,
-        Guid? DefaultListId,
-        Domain.Entities.WishList? DefaultList,
-        ICollection<Domain.Entities.WishList>? Lists);
+        Guid DefaultListId,
+        Domain.Entities.WishList DefaultList,
+        ICollection<Domain.Entities.WishList> Lists);
 }

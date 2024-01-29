@@ -22,9 +22,9 @@ namespace WorkTitle.Domain.Entities
 
         public bool? IsShowMined { get; set; }
 
-        public bool IsShowFullness { get; set; }
+        public bool? IsShowFullness { get; set; }
 
-        public string? Name { get; set; }
+        public required string Name { get; set; }
 
         public byte[]? Image { get; set; }
 

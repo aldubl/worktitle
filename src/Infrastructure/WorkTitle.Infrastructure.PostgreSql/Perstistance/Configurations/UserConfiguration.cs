@@ -19,7 +19,7 @@ namespace WorkTitle.Infrastructure.PostgreSql.Perstistance.Configurations
 
             builder.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(e => e.ChatId).HasMaxLength(100);
-            builder.Property(e => e.Login).HasMaxLength(250);
+            //builder.Property(e => e.Login).HasMaxLength(250);
             builder.Property(e => e.Name).HasMaxLength(1500);
             builder.Property(e => e.PhotoUrl).HasMaxLength(1000);
 

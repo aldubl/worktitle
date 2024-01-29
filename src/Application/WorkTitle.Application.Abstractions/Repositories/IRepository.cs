@@ -32,7 +32,7 @@ namespace WorkTitle.Application.Abstractions.Repositories
         /// Adds a new entity of type T to the repository.
         /// </summary>
         /// <param name="item">The entity to be added.</param>
-        void Add(T item);
+        T Add(T item);
 
         /// <summary>
         /// Updates an existing entity of type T in the repository.

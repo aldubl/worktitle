@@ -19,9 +19,15 @@ namespace WorkTitle.Api.Mapping
             CreateMap<WishListModel, WishListDto>()
                 .ForMember(x => x.Id, map => map.Ignore())
                 .ForMember(x => x.UserId, map => map.Ignore())
-                //.ForMember(x => x.IsPublic, map => map.Ignore())
+                .ForMember(x => x.IsPublic, map => map.Ignore())
                 .ForMember(x => x.TypeId, map => map.Ignore())
-                //.ForMember(x => x.IsGroup, map => map.Ignore())
+                .ForMember(x => x.IsGroup, map => map.Ignore())
+                .ForMember(x => x.NeedVotes, map => map.Ignore())
+                .ForMember(x => x.IsShowMined, map => map.Ignore())
+                .ForMember(x => x.IsShowFullness, map => map.Ignore())
+                .ForMember(x => x.Image, map => map.Ignore())
+                .ForMember(x => x.Type, map => map.Ignore())
+                .ForMember(x => x.User, map => map.Ignore())
                 .ForMember(x => x.Products, map => map.Ignore())
                 .ForMember(x => x.Users, map => map.Ignore());
             CreateMap<WishListResponse, WishListDto>();
@@ -29,8 +35,7 @@ namespace WorkTitle.Api.Mapping
                 .ForMember(x => x.UserId, map => map.Ignore())
                 //.ForMember(x => x.IsPublic, map => map.Ignore())
                 .ForMember(x => x.TypeId, map => map.Ignore());
-                //.ForMember(x => x.IsGroup, map => map.Ignore());
-
+            //.ForMember(x => x.IsGroup, map => map.Ignore());
         }
     }
 }

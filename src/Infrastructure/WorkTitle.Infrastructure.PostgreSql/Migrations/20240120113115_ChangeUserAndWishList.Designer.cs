@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkTitle.Infrastructure.PostgreSql.Perstistance;
@@ -11,9 +12,11 @@ using WorkTitle.Infrastructure.PostgreSql.Perstistance;
 namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
 {
     [DbContext(typeof(WorkTitleContext))]
-    partial class WorkTitleContextModelSnapshot : ModelSnapshot
+    [Migration("20240120113115_ChangeUserAndWishList")]
+    partial class ChangeUserAndWishList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,9 +226,10 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<long>("ChatId")
+                    b.Property<string>("ChatId")
+                        .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("bigint");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid>("DefaultListId")
                         .HasColumnType("uuid");
@@ -235,7 +239,6 @@ namespace WorkTitle.Infrastructure.PostgreSql.Migrationspace
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(1500)
                         .HasColumnType("character varying(1500)");
 
