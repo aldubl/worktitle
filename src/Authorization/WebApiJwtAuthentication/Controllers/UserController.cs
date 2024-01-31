@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using WebApiJwtAuthentication.Logging;
 using WebApiJwtAuthentication.Models;
 using WebApiJwtAuthentication.Services;
 
@@ -40,6 +41,8 @@ namespace WebApiJwtAuthentication.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Register([FromBody] UserRegisterDTO userRegisterDTO)
         {
+            SimpleLogger.Instance.Log(SimpleLogger.Level.INFO, "Registration request");
+
             IdentityResult result;
 
             ApplicationUser newUser = new()
@@ -86,6 +89,8 @@ namespace WebApiJwtAuthentication.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
         {
+            SimpleLogger.Instance.Log(SimpleLogger.Level.INFO, "Login request");
+
             var user = await _userManager.FindByEmailAsync(userLoginDTO.Email);
 
             if (user != null && await _userManager.CheckPasswordAsync(user, userLoginDTO.Password))
