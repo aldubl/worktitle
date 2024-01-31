@@ -10,13 +10,13 @@ namespace WorkTitle.Domain.EntitiesDto
 {
     public sealed class UserDto : BaseEntityDto
     {
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         //public string? Login { get; set; }
 
         public string? PhotoUrl { get; set; }
 
-        public required long ChatId { get; set; }
+        public long? ChatId { get; set; }
 
         public required string Email { get; set; }
 

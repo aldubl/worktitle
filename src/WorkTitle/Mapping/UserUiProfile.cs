@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Routing.Constraints;
+using RabbitMQ.Events;
 using WorkTitle.Api.Models;
 using WorkTitle.Api.ResponseModels.User;
 using WorkTitle.Domain.EntitiesDto;
@@ -26,7 +27,14 @@ namespace WorkTitle.Api.Mapping
                 .ForMember(x => x.DefaultList, map => map.Ignore())
                 .ForMember(x => x.Lists, map => map.Ignore());
 
-
+            CreateMap<UserUpdated, UserDto>()
+                .ForMember(x => x.Id, map => map.Ignore())
+                .ForMember(x => x.ChatId, map => map.Ignore())
+                .ForMember(x => x.Name, map => map.Ignore())
+                .ForMember(x => x.PhotoUrl, map => map.Ignore())
+                .ForMember(x => x.DefaultListId, map => map.Ignore())
+                .ForMember(x => x.DefaultList, map => map.Ignore())
+                .ForMember(x => x.Lists, map => map.Ignore());
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Common.DTO
     {
         [Required]
         [EmailAddress]
-        public string? Email { get; set; }
+        public required string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

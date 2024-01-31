@@ -91,6 +91,26 @@ namespace WorkTitle.Api.Controllers
         }
 
         /// <summary>
+        /// Adds a new simple product.
+        /// </summary>
+        /// <param name="productModel">The product details to add.</param>
+        /// <returns>The newly added product.</returns>
+        [HttpPost("AddSimpleProduct")]
+        [SwaggerOperation(
+            Summary = "Добавляет простое желание",
+            Description = "Добавляет товар в базу данных и возвращает созданный товар из базы данных",
+            Tags = new[] { "Product" }
+            )]
+        [SwaggerResponse(StatusCodes.Status201Created, "Товар добавлен в базу данных", typeof(ProductResponseShort))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Не указано обязательное поле")]
+        public async Task<ActionResult> AddProduct([FromBody] ProductSimpleModel productModel)
+        {
+            var addedProduct = await _sender.Send(new AddProductAsyncCommand(_mapper.Map<ProductDto>(productModel)));
+
+            return CreatedAtRoute("GetProductById", new { id = addedProduct.Id }, _mapper.Map<ProductResponseShort>(addedProduct));
+        }
+
+        /// <summary>
         /// Updates an existing product.
         /// </summary>
         /// <param name="id">The unique identifier of the product to update.</param>

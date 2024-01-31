@@ -27,6 +27,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using MassTransit;
+using RabbitMQ.Events;
+using WorkTitle.Api.Consumers;
 
 namespace WorkTitle.Api
 {
@@ -36,6 +39,7 @@ namespace WorkTitle.Api
         {
             return services.AddSingleton((IConfigurationRoot)configuration)
                 .AddAuth(configuration)
+                .InstallRabbitMQ(configuration)
                 .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly))
                 .AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()))
                 .AddInfrastructureServices(configuration)
@@ -143,6 +147,26 @@ namespace WorkTitle.Api
             });
             configuration.AssertConfigurationIsValid();
             return configuration;
+        }
+
+        private static IServiceCollection InstallRabbitMQ(this IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            serviceCollection
+                .AddMassTransit(x =>
+                {
+                    x.AddConsumersFromNamespaceContaining<UserUpdateConsumer>();
+                    x.UsingRabbitMq((context, cfg) =>
+                    {
+                        cfg.Host(configuration["RabbitMq:Host"], "/", host =>
+                        {
+                            host.Username(configuration.GetValue("RabbitMq:Username", "guest"));
+                            host.Password(configuration.GetValue("RabbitMq:Password", "guest"));
+                        });
+                        cfg.ConfigureEndpoints(context);
+                    });
+
+                });
+            return serviceCollection;
         }
     }
 }

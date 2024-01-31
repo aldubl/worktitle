@@ -71,7 +71,7 @@ namespace WorkTitle.Telegramm.Services
 
             async Task<Message> EmailHandle(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
             {
-                await _api.RegisterUserAsync(new UserModel() { ChatId = message.From.Id, Email = message.Text, Name = $"{message.From.FirstName} {message.From.LastName}"});
+                await _api.RegisterUserAsync(new UserModel() { ChatId = message.From.Id, Email = message.Text, Name = $"{message.From.FirstName} {message.From.LastName}" });
 
                 string usage = "Вы успешно зарегистрировались!";
 
@@ -105,6 +105,7 @@ namespace WorkTitle.Telegramm.Services
                 else if (!start)
                 {
                     usage = "Добавлен в лист!";
+                    await _api.AddSimpleProductAsync(new ProductSimpleModel() { Name = message.Text, ListId = user.DefaultListId });
                 }
 
                 return await botClient.SendTextMessageAsync(

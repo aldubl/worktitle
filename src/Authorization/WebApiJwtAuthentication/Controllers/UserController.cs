@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using WebApiJwtAuthentication.Logging;
 using WebApiJwtAuthentication.Models;
+using WebApiJwtAuthentication.Publishers.Interfaces;
 using WebApiJwtAuthentication.Services;
 
 namespace WebApiJwtAuthentication.Controllers
@@ -18,19 +19,22 @@ namespace WebApiJwtAuthentication.Controllers
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IClaimsService _claimsService;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IPublisherRabbitMQ _publisher;
 
         public UserController(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
 			SignInManager<ApplicationUser> signInManager,
 			IClaimsService claimsService,
-            IJwtTokenService jwtTokenService)
+            IJwtTokenService jwtTokenService,
+            IPublisherRabbitMQ publisher)
         {
             _userManager = userManager;
             _roleManager = roleManager;
 			_signInManager = signInManager;
 			_claimsService = claimsService;
             _jwtTokenService = jwtTokenService;
+            _publisher = publisher;
         }
 
 
@@ -63,6 +67,8 @@ namespace WebApiJwtAuthentication.Controllers
 
             await SeedRoles();
             result = await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+
+            await _publisher.SendUpdateUser(userRegisterDTO.Email);
 
             return CreatedAtAction(nameof(Register), new UserRegisterResultDTO { Succeeded = true });
         }

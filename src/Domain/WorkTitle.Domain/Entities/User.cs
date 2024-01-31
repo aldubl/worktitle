@@ -10,13 +10,13 @@ namespace WorkTitle.Domain.Entities
 {
     public sealed class User : BaseEntity
     {
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         //public string? Login { get; set; }
 
         public string? PhotoUrl { get; set; }
 
-        public required long ChatId { get; set; }
+        public long? ChatId { get; set; }
         public required string Email { get; set; }
 
         public required Guid DefaultListId { get; set; }

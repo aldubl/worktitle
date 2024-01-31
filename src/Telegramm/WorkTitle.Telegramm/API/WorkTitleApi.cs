@@ -49,22 +49,32 @@ namespace WorkTitle.Telegramm.API
 
         public async Task<User> RegisterUserAsync(UserModel user)
         {
+            return await PostExecute<UserModel, User>(user, "/api/Users");
+        }
+
+        public async Task<Product> AddSimpleProductAsync(ProductSimpleModel product)
+        {
+            return await PostExecute<ProductSimpleModel, Product>(product, "/api/Products/AddSimpleProduct");
+        }
+
+        private async Task<T2> PostExecute<T1, T2>(T1 value, string path)
+        {
             await SetToken();
 
             string body;
 
-            using (var request = new HttpRequestMessage(new HttpMethod("POST"), _url + "/api/Users"))
+            using (var request = new HttpRequestMessage(new HttpMethod("POST"), _url + path))
             {
                 request.Headers.TryAddWithoutValidation("accept", "text/plain");
-               
-                request.Content = new StringContent(JsonConvert.SerializeObject(user));
+
+                request.Content = new StringContent(JsonConvert.SerializeObject(value));
                 request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
 
                 var response = await _httpClient.SendAsync(request);
-                body = await response.Content.ReadAsStringAsync();                
+                body = await response.Content.ReadAsStringAsync();
             }
 
-            var userOut = JsonConvert.DeserializeObject<User>(body);
+            var userOut = JsonConvert.DeserializeObject<T2>(body);
 
             return userOut!;
         }
