@@ -30,11 +30,17 @@ namespace WorkTitle.Application.UserService.CommandHandlers
 
         public async Task<UserDto> Handle(AddUserAsyncCommand request, CancellationToken cancellationToken)
         {
-            var wishListId = _wishListRepository.Add(_mapper.Map<WishList>(DefaultValue.GetDefaultWishList())).Id;
+            var wishList = _wishListRepository.Add(_mapper.Map<WishList>(DefaultValue.GetDefaultWishList()));
             
-            request.User.DefaultListId = wishListId;
+            request.User.DefaultListId = wishList.Id;
 
-            _userRepository.Add(_mapper.Map<User>(request.User));
+            var user = _userRepository.Add(_mapper.Map<User>(request.User));            
+            
+            await _userRepository.SaveChangesAsync(cancellationToken);
+
+            wishList.UserId = user.Id;
+            _wishListRepository.Update(wishList);
+
             await _userRepository.SaveChangesAsync(cancellationToken);
 
             return request.User;

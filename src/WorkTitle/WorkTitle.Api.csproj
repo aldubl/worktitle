@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="MassTransit" Version="8.1.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.3" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
@@ -31,6 +33,7 @@
     <ProjectReference Include="..\Application\WorkTitle.Application.Abstractions\WorkTitle.Application.Abstractions.csproj" />
     <ProjectReference Include="..\Application\WorkTitle.Application\WorkTitle.Application.csproj" />
     <ProjectReference Include="..\Domain\WorkTitle.Domain\WorkTitle.Domain.csproj" />
+    <ProjectReference Include="..\Events\RabbitMQ.Events\RabbitMQ.Events.csproj" />
     <ProjectReference Include="..\Infrastructure\WorkTitle.Infrastructure.Implementation\WorkTitle.Infrastructure.Implementation.csproj" />
     <ProjectReference Include="..\Infrastructure\WorkTitle.Infrastructure.PostgreSql\WorkTitle.Infrastructure.PostgreSql.csproj" />
     <ProjectReference Include="..\Infrastructure\WorkTitle.Infrastructure\WorkTitle.Infrastructure.csproj" />

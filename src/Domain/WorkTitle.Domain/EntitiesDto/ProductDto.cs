@@ -10,7 +10,7 @@ namespace WorkTitle.Domain.EntitiesDto
 {
     public sealed class ProductDto : BaseEntityDto
     {
-        public string? Name { get; set; }
+        public required string Name { get; set; }
 
         public string? Url { get; set; }
 
@@ -30,7 +30,7 @@ namespace WorkTitle.Domain.EntitiesDto
 
         public decimal? Fullness { get; set; }
 
-        public Guid ListId { get; set; }
+        public required Guid ListId { get; set; }
 
         public byte[]? Image { get; set; }
 

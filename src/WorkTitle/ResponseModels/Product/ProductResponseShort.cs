@@ -5,6 +5,7 @@ namespace WorkTitle.Api.ResponseModels.Product
 {
     internal sealed record ProductResponseShort(
         Guid Id,
+        Guid ListId,
         string? Name,
         decimal? LastPrice,
         short? LastScore,
@@ -14,9 +15,6 @@ namespace WorkTitle.Api.ResponseModels.Product
         short? Vote,
         bool IsMined,
         decimal? Fullness,
-        byte[]? Image,
-        Domain.Entities.WishList? List
+        byte[]? Image
         );
-    
-    
 }
